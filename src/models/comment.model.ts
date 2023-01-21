@@ -1,24 +1,16 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IUser {
-	username: string;
-	password: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	avatar: string;
+export interface IComment {
+	user: string;
+	body: string;
 }
 
-export interface IUserModel extends IUser, Document {}
+export interface ICommentModel extends IComment, Document {}
 
-const UserSchema: Schema = new Schema(
+const CommentSchema: Schema = new Schema(
 	{
-		username: { type: String, required: true },
-		password: { type: String, required: true },
-		email: { type: String, required: true },
-		firstName: { type: String, required: true },
-		lastName: { type: String, required: true },
-		avatar: { type: String, required: true },
+		user: { type: Schema.Types.ObjectId, ref: "User" },
+		body: { type: String, required: true },
 	},
 	{
 		timestamps: true,
@@ -26,4 +18,4 @@ const UserSchema: Schema = new Schema(
 	},
 );
 
-export default mongoose.model<IUserModel>("User", UserSchema);
+export default mongoose.model<ICommentModel>("Comment", CommentSchema);
