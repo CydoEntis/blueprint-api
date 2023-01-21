@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const MONGO_USERNAME = process.env.MONGO_USERNAME || "";

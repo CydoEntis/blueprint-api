@@ -15,8 +15,11 @@ async function connectToDB() {
 			retryWrites: true,
 			w: "majority",
 		});
+		Logger.success("Connected to MongoDb");
 		startServer();
-	} catch (error: any) {}
+	} catch (error: any) {
+		Logger.error(error);
+	}
 }
 
 connectToDB();
