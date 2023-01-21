@@ -1,6 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IProject {}
+export interface IProject {
+	title: string;
+	team: string;
+	description: string;
+	dueDate: Date;
+	progress: number;
+}
 
 export interface IProjectModel extends IProject, Document {}
 
