@@ -18,10 +18,10 @@ const TaskSchema: Schema = new Schema(
 		title: { type: String, required: true },
 		type: { type: String, required: true },
 		description: { type: String, required: true },
-		subTasks: { type: [String] },
+		subTasks: { type: [Schema.Types.ObjectId], ref: "SubTask" },
 		dueDate: { type: Date, required: true },
-		comments: { type: [Comment], ref: "Comment" },
-		user: { type: [User], ref: "User", required: true },
+		comments: { type: [Schema.Types.ObjectId], ref: "Comment" },
+		user: { type: [Schema.Types.ObjectId], ref: "User", required: true },
 	},
 	{
 		timestamps: true,
