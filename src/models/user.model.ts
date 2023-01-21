@@ -6,12 +6,12 @@ export interface IUserModel extends IUser, Document {}
 
 const UserSchema: Schema = new Schema(
 	{
-		title: { type: String, required: true },
-		team: { type: String, required: true },
-		description: { type: String, required: true },
-		dueDate: { type: Date, required: true },
-		progress: { type: Number, default: 0 },
-		// users: {[UserSchema]}
+		username: { type: String, required: true },
+		password: { type: String, required: true },
+		email: { type: String, required: true },
+		firstName: { type: String, required: true },
+		lastName: { type: String, required: true },
+		avatar: { type: String, required: true },
 	},
 	{
 		timestamps: true,
