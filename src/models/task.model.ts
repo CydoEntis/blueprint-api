@@ -1,14 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-import User from "./user.model";
-
 export interface ITask {
 	title: string;
-	team: string;
 	type: string;
 	description: string;
+	subTasks: string[];
 	dueDate: Date;
-	progress: number;
+	comments: string[];
+	users: string[];
 }
 
 export interface ITaskModel extends ITask, Document {}
@@ -21,7 +20,7 @@ const TaskSchema: Schema = new Schema(
 		subTasks: { type: [Schema.Types.ObjectId], ref: "SubTask" },
 		dueDate: { type: Date, required: true },
 		comments: { type: [Schema.Types.ObjectId], ref: "Comment" },
-		user: { type: [Schema.Types.ObjectId], ref: "User", required: true },
+		users: { type: [Schema.Types.ObjectId], ref: "User", required: true },
 	},
 	{
 		timestamps: true,

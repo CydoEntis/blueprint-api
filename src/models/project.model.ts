@@ -7,6 +7,7 @@ export interface IProject {
 	description: string;
 	dueDate: Date;
 	progress: number;
+	users: string[];
 }
 
 export interface IProjectModel extends IProject, Document {}
@@ -19,7 +20,7 @@ const ProjectSchema: Schema = new Schema(
 		description: { type: String, required: true },
 		dueDate: { type: Date, required: true },
 		progress: { type: Number, default: 0 },
-		// users: {[UserSchema]}
+		users: { type: [Schema.Types.ObjectId], ref: "User", required: true },
 	},
 	{
 		timestamps: true,
