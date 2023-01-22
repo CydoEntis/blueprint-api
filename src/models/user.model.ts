@@ -13,7 +13,9 @@ export interface IUser {
 	avatar: string;
 }
 
-export interface IUserModel extends IUser, Document {}
+export interface IUserModel extends IUser, Document {
+	createJWT: () => string;
+}
 
 const UserSchema: Schema = new Schema<IUserModel>(
 	{
