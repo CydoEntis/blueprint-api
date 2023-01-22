@@ -58,6 +58,29 @@ async function getProject(req: Request, res: Response) {
 		return res.status(404).json({ message: "Project count not be found" });
 	}
 }
+
+async function updateProject(req: Request, res: Response) {
+	const projectId = req.params.projectId;
+
+	try {
+		const project = await Project.findById(projectId);
+
+		if (!project) {
+			return res.status(404).json({ message: "Project could not be found" });
+		}
+
+		const updatedProject = await Project.findOneAndUpdate(
+			{ projectId },
+			req.body,
+		);
+
+		return res.status(200).json({ updatedProject });
+	} catch (error: any) {
+		Logger.error(error);
+		return res.status(404).json({ message: "Project could not be updated" });
+	}
+}
+
 export default {
 	createProject,
 };
