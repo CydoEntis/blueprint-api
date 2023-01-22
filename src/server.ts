@@ -5,6 +5,7 @@ import { config } from "./config/config";
 import cors from "cors";
 import http from "http";
 import mongoose from "mongoose";
+import userRoutes from "./routes/user.routes";
 
 const app = express();
 
@@ -44,6 +45,7 @@ function startServer() {
 	app.use(cors());
 
 	// TODO: Add Routes...
+	app.use("/user", userRoutes);
 
 	app.use((req: Request, res: Response, next: NextFunction) => {
 		const error = new Error("Not Found");

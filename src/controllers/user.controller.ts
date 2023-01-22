@@ -33,3 +33,7 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 		token,
 	});
 }
+
+export default {
+	createUser,
+};
