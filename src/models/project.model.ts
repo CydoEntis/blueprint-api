@@ -6,21 +6,23 @@ export interface IProject {
 	type: string;
 	description: string;
 	dueDate: Date;
-	progress: number;
+	tasks: string[];
 	users: string[];
+	createdBy: string;
 }
 
 export interface IProjectModel extends IProject, Document {}
 
 const ProjectSchema: Schema = new Schema(
 	{
-		title: { type: String, required: true },
-		team: { type: String, required: true },
-		type: { type: String, required: true },
-		description: { type: String, required: true },
-		dueDate: { type: Date, required: true },
-		progress: { type: Number, default: 0 },
+		title: { type: String, required: [true, "Please add a title"] },
+		team: { type: String, required: [true, "Please assign a team"] },
+		type: { type: String, required: [true, "Please select a type"] },
+		description: { type: String, required: [true, "Please add a description"] },
+		dueDate: { type: Date, required: [true, "Please add a due date"] },
+		tasks: { type: [Schema.Types.ObjectId], ref: "Task" },
 		users: { type: [Schema.Types.ObjectId], ref: "User", required: true },
+		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 	},
 	{
 		timestamps: true,
