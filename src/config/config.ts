@@ -10,12 +10,19 @@ const SERVER_PORT = process.env.SERVER_PORT
 	? Number(process.env.SERVER_PORT)
 	: 1337;
 
+const JWT_SECRET = process.env.JWT_SECRET || "";
+const JWT_LIFETIME = process.env.JWT_LIFETIME || "";
+
 export const config = {
 	mongo: {
 		url: MONGO_URL,
 	},
 	server: {
 		port: SERVER_PORT,
+	},
+	jwt: {
+		secret: JWT_SECRET,
+		lifetime: JWT_LIFETIME,
 	},
 	saltRounds: 10,
 };

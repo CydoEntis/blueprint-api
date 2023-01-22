@@ -1,10 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-import { NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { config } from "../config/config";
 import jwt from "jsonwebtoken";
-import { nextTick } from "process";
 
 export interface IUser {
 	username: string;
@@ -61,8 +59,8 @@ UserSchema.methods.comparePassword = async function (
 };
 
 UserSchema.methods.createJWT = function () {
-	return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_LIFETIME,
+	return jwt.sign({ userId: this._id }, config.jwt.secret, {
+		expiresIn: config.jwt.lifetime,
 	});
 };
 
