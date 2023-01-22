@@ -36,25 +36,21 @@ const UserSchema: Schema = new Schema<IUserModel>(
 );
 
 UserSchema.pre("save", async function (next) {
-	let user = this as IUserModel;
-
-	if (!user.isModified("password")) {
+	if (!this.isModified("password")) {
 		return next();
 	}
 
 	const salt = await bcrypt.genSalt(config.saltRounds);
-	const hash = await bcrypt.hashSync(user.password, salt);
-	user.password = hash;
+	const hash = await bcrypt.hashSync(this.password, salt);
+	this.password = hash;
 	return next();
 });
 
 UserSchema.methods.comparePassword = async function (
 	checkPassword: string,
 ): Promise<boolean> {
-	const user = this as IUserModel;
-
 	try {
-		const isValid = bcrypt.compare(checkPassword, user.password);
+		const isValid = bcrypt.compare(checkPassword, this.password);
 		if (!isValid) {
 			return false;
 		}
@@ -62,6 +58,12 @@ UserSchema.methods.comparePassword = async function (
 	} catch (error: any) {
 		return false;
 	}
+};
+
+UserSchema.methods.createJWT = function () {
+	return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
+		expiresIn: process.env.JWT_LIFETIME,
+	});
 };
 
 export default mongoose.model<IUserModel>("User", UserSchema);
