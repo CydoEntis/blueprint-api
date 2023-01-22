@@ -81,6 +81,26 @@ async function updateProject(req: Request, res: Response) {
 	}
 }
 
+async function deleteProject(req: Request, res: Response) {
+	const projectId = req.params.projectId;
+
+	try {
+		await Project.findByIdAndDelete(projectId);
+
+		return res
+			.status(201)
+			.json({ message: `Project with id: ${projectId} was deleted.` });
+	} catch (error: any) {
+		Logger.error(error);
+		return res
+			.status(404)
+			.json({ message: `Project with id: ${projectId} could not be deleted.` });
+	}
+}
+
 export default {
 	createProject,
+	getProject,
+	updateProject,
+	deleteProject,
 };
