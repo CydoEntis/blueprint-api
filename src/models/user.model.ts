@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 export interface IUser {
 	username: string;
-	password: string;
+	password: string | undefined;
 	email: string;
 	firstName: string;
 	lastName: string;
@@ -14,6 +14,7 @@ export interface IUser {
 }
 
 export interface IUserModel extends IUser, Document {
+	comparePassword: (password: string) => boolean;
 	createJWT: () => string;
 }
 

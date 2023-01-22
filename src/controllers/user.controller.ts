@@ -34,6 +34,37 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function loginUser(req: Request, res: Response) {
+	const { email, password } = req.body;
+
+	if (!email || !password) {
+		throw Error("Please provide all values");
+	}
+
+	try {
+		const user = await User.findOne({ email }).select("+password");
+
+		if (!user) {
+			throw Error("Invalid email or password.");
+		}
+
+		const isPasswordCorrect = await user.comparePassword(password);
+
+		if (!isPasswordCorrect) {
+			throw Error("Invalid email or password");
+		}
+
+		const token = user.createJWT();
+		user.password = undefined;
+
+		return res.status(200).json({ user, token });
+	} catch (error: any) {
+		Logger.error(error);
+		return res.status(404).json({ message: error });
+	}
+}
+
 export default {
 	createUser,
+	loginUser,
 };
