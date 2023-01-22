@@ -3,9 +3,9 @@ import express from "express";
 
 const router = express.Router();
 
-router.post("/get/:projectId", controller.createProject);
+router.get("/get/:projectId", controller.getProject);
 router.post("/create", controller.createProject);
-router.post("/update/:projectId", controller.createProject);
-router.post("/delete/:projectId", controller.createProject);
+router.put("/update/:projectId", controller.updateProject);
+router.delete("/delete/:projectId", controller.deleteProject);
 
 export default router;

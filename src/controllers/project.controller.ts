@@ -45,7 +45,7 @@ async function getProject(req: Request, res: Response) {
 
 	try {
 		const project = await Project.findById(projectId)
-			.populate("user")
+			.populate("users")
 			.select("-__v");
 
 		if (!project) {
