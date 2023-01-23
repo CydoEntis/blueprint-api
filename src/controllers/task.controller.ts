@@ -51,7 +51,7 @@ async function getTask(req: Request, res: Response) {
 	}
 }
 
-async function getAllTasks(req: Request, res: Response) {
+async function getTasks(req: Request, res: Response) {
 	try {
 		const tasks = await Task.find().populate("users");
 
@@ -104,7 +104,7 @@ async function deleteTask(req: Request, res: Response) {
 }
 
 async function deleteAllTasks(req: Request, res: Response) {
-	const projectId = req.params.projectId;
+	const { projectId } = req.body;
 
 	try {
 		await Task.deleteMany({ projectId });
@@ -122,6 +122,8 @@ async function deleteAllTasks(req: Request, res: Response) {
 export default {
 	createTask,
 	getTask,
+	getTasks,
 	updateTask,
 	deleteTask,
+	deleteAllTasks,
 };
