@@ -51,6 +51,20 @@ async function getTask(req: Request, res: Response) {
 	}
 }
 
+async function getAllTasks(req: Request, res: Response) {
+	try {
+		const tasks = await Task.find().populate("users");
+
+		if (!tasks) {
+			return res.status(404).json({ message: "No tasks could be found." });
+		}
+
+		res.status(200).json({ tasks });
+	} catch (error: any) {
+		return res.status(404).json({ message: "No tasks could be found." });
+	}
+}
+
 async function updateTask(req: Request, res: Response) {
 	const taskId = req.params.taskId;
 
