@@ -103,6 +103,22 @@ async function deleteTask(req: Request, res: Response) {
 	}
 }
 
+async function deleteAllTasks(req: Request, res: Response) {
+	const projectId = req.params.projectId;
+
+	try {
+		await Task.deleteMany({ projectId });
+
+		return res
+			.status(201)
+			.json({ message: `Tasks with projectId: ${projectId} were deleted.` });
+	} catch (error: any) {
+		return res
+			.status(404)
+			.json({ message: `No tasks with projectId: ${projectId} were deleted.` });
+	}
+}
+
 export default {
 	createTask,
 	getTask,
