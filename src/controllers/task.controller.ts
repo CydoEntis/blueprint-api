@@ -67,6 +67,7 @@ async function getTasks(req: Request, res: Response) {
 
 async function updateTask(req: Request, res: Response) {
 	const taskId = req.params.taskId;
+	req.body;
 
 	try {
 		const task = await Task.findById(taskId);
@@ -77,7 +78,7 @@ async function updateTask(req: Request, res: Response) {
 
 		// Create an updated task object and check to see if all were passed through.
 
-		const updatedTask = await Task.findOneAndUpdate({ taskId }, req.body);
+		const updatedTask = await Task.findOneAndUpdate({ taskId }, {});
 
 		return res.status(200).json({ updatedTask });
 	} catch (error: any) {

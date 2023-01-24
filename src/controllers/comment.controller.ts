@@ -59,6 +59,7 @@ async function getComments(req: Request, res: Response) {
 }
 
 async function updateComment(req: Request, res: Response) {
+	const { taskId, userId, commentBody } = req.body;
 	const commentId = req.params.commentId;
 
 	try {
@@ -72,7 +73,11 @@ async function updateComment(req: Request, res: Response) {
 
 		const updatedComment = await Comment.findOneAndUpdate(
 			{ commentId },
-			req.body,
+			{
+				taskId,
+				userId,
+				commentBody,
+			},
 		);
 
 		return res.status(200).json({ updatedComment });
