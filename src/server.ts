@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 
 import Logger from "./library/Logger";
+import commentRoutes from "./routes/comment.routes";
 import { config } from "./config/config";
 import cors from "cors";
 import http from "http";
@@ -50,6 +51,7 @@ function startServer() {
 	app.use("/user", userRoutes);
 	app.use("/project", projectRoutes);
 	app.use("/task", taskRoutes);
+	app.use("/comment", commentRoutes);
 
 	app.use((req: Request, res: Response, next: NextFunction) => {
 		const error = new Error("Not Found");
