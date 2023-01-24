@@ -60,7 +60,7 @@ async function getTask(req: Request, res: Response) {
 
 async function getTasks(req: Request, res: Response) {
 	try {
-		const tasks = await Task.find().populate("users");
+		const tasks = await Task.find().populate("users").select("-password");
 
 		if (!tasks) {
 			return res.status(404).json({ message: "No tasks could be found." });

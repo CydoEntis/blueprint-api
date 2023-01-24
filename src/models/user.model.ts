@@ -21,7 +21,11 @@ export interface IUserModel extends IUser, Document {
 const UserSchema: Schema = new Schema<IUserModel>(
 	{
 		username: { type: String, required: [true, "Please provide a username"] },
-		password: { type: String, required: [true, "Please provide a password"] },
+		password: {
+			type: String,
+			select: false,
+			required: [true, "Please provide a password"],
+		},
 		email: { type: String, required: [true, "Please provide a valid email"] },
 		firstName: {
 			type: String,
