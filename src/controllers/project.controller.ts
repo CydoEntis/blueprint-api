@@ -115,6 +115,7 @@ async function deleteProject(req: Request, res: Response) {
 export default {
 	createProject,
 	getProject,
+	getProjects,
 	updateProject,
 	deleteProject,
 };
