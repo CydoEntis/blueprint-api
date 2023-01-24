@@ -64,6 +64,38 @@ async function loginUser(req: Request, res: Response) {
 	}
 }
 
+async function getUser(req: Request, res: Response) {
+	const userId = req.params.userId;
+
+	try {
+		const user = await User.findById(userId).select("-password");
+
+		if (!user) {
+			return res.status(404).json({ message: "User could not be found." });
+		}
+
+		return res.status(200).json({ user });
+	} catch (error: any) {
+		Logger.error(error.message);
+		return res.status(404).json({ message: "User count not be found" });
+	}
+}
+
+async function getUsers(req: Request, res: Response) {
+	try {
+		const user = await User.find({}).select("-password");
+
+		if (!user) {
+			return res.status(404).json({ message: "User could not be found." });
+		}
+
+		return res.status(200).json({ user });
+	} catch (error: any) {
+		Logger.error(error.message);
+		return res.status(404).json({ message: "User count not be found" });
+	}
+}
+
 export default {
 	createUser,
 	loginUser,
