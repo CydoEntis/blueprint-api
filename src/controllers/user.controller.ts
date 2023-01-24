@@ -97,9 +97,26 @@ async function getUsers(req: Request, res: Response) {
 	}
 }
 
+async function deleteUser(req: Request, res: Response) {
+	const userId = req.params.userId;
+	try {
+		await User.findByIdAndDelete(userId);
+
+		return res
+			.status(201)
+			.json({ message: `User with id: ${userId} was deleted` });
+	} catch (error: any) {
+		Logger.error(error);
+		return res
+			.status(404)
+			.json({ message: `Task with id: ${userId} could not be deleted.` });
+	}
+}
+
 export default {
 	createUser,
 	loginUser,
 	getUser,
 	getUsers,
+	deleteUser,
 };
