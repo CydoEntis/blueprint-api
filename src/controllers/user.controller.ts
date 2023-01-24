@@ -99,4 +99,6 @@ async function getUsers(req: Request, res: Response) {
 export default {
 	createUser,
 	loginUser,
+	getUser,
+	getUser,
 };
