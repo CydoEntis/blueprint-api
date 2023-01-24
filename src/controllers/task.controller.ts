@@ -6,9 +6,16 @@ import User from "../models/user.model";
 import mongoose from "mongoose";
 
 async function createTask(req: Request, res: Response) {
-	const { title, type, description, subTasks, dueDate, users, createdBy } =
-		req.body;
-	const projectId = req.params.projectId;
+	const {
+		projectId,
+		title,
+		type,
+		description,
+		subTasks,
+		dueDate,
+		users,
+		createdBy,
+	} = req.body;
 
 	if (!title || !type || !description || !dueDate || !users || !createdBy) {
 		Logger.error("Please provide all values.");
