@@ -26,11 +26,10 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 		avatar,
 	});
 
-	const token = user.createJWT();
+	// const token = user.createJWT();
 
 	return res.status(200).json({
-		user,
-		token,
+		message: "Account created successfully. Please Log in.",
 	});
 }
 
@@ -66,7 +65,7 @@ async function loginUser(req: Request, res: Response) {
 
 async function getUser(req: Request, res: Response) {
 	const userId = req.params.userId;
-
+	console.log(userId);
 	try {
 		const user = await User.findById(userId).select("-password");
 
@@ -83,16 +82,18 @@ async function getUser(req: Request, res: Response) {
 
 async function getUsers(req: Request, res: Response) {
 	try {
-		const user = await User.find({}).select("-password");
+		const users = await User.find({}).select("-password");
 
-		if (!user) {
-			return res.status(404).json({ message: "User could not be found." });
+		if (!users) {
+			return res.status(404).json({ message: "Users could not be found." });
 		}
 
-		return res.status(200).json({ user });
+		console.log(users);
+
+		return res.status(200).json({ users });
 	} catch (error: any) {
 		Logger.error(error.message);
-		return res.status(404).json({ message: "User count not be found" });
+		return res.status(404).json({ message: "Users count not be found" });
 	}
 }
 
@@ -100,5 +101,5 @@ export default {
 	createUser,
 	loginUser,
 	getUser,
-	getUser,
+	getUsers,
 };
