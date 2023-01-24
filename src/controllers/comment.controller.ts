@@ -6,24 +6,18 @@ import User from "../models/user.model";
 import mongoose from "mongoose";
 
 async function createComment(req: Request, res: Response) {
-	const { taskId, userId, comment } = req.body;
-	const projectId = req.params.projectId;
+	const { taskId, userId, commentBody } = req.body;
 
-	if (!title || !type || !description || !dueDate || !users || !createdBy) {
+	if (!commentBody) {
 		Logger.error("Please provide all values.");
 		throw Error("Please provide all values.");
 	}
 
 	try {
 		const comment = await Comment.create({
-			projectId,
-			title,
-			type,
-			description,
-			subComments,
-			dueDate,
-			users,
-			createdBy,
+			taskId,
+			userId,
+			commentBody,
 		});
 
 		return res.status(201).json({ comment });
@@ -37,9 +31,7 @@ async function getComment(req: Request, res: Response) {
 	const commentId = req.params.commentId;
 
 	try {
-		const comment = await Comment.findById(commentId)
-			.populate("users")
-			.select("-__v");
+		const comment = await Comment.findById(commentId);
 
 		if (!comment) {
 			return res.status(404).json({ message: "Comment could not be found." });
