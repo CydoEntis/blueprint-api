@@ -59,6 +59,20 @@ async function getProject(req: Request, res: Response) {
 	}
 }
 
+async function getProjects(req: Request, res: Response) {
+	try {
+		const projects = await Project.find({});
+		if (!projects) {
+			return res.status(404).json({ message: "Projects could not be found." });
+		}
+
+		return res.status(200).json({ projects });
+	} catch (error: any) {
+		Logger.error(error.message);
+		return res.status(404).json({ message: "Projects count not be found" });
+	}
+}
+
 async function updateProject(req: Request, res: Response) {
 	const projectId = req.params.projectId;
 
