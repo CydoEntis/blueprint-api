@@ -8,9 +8,7 @@ export interface IUser {
 	username: string;
 	password: string | undefined;
 	email: string;
-	firstName: string;
-	lastName: string;
-	avatar: string;
+	// avatar: string;
 }
 
 export interface IUserModel extends IUser, Document {
@@ -27,12 +25,7 @@ const UserSchema: Schema = new Schema<IUserModel>(
 			required: [true, "Please provide a password"],
 		},
 		email: { type: String, required: [true, "Please provide a valid email"] },
-		firstName: {
-			type: String,
-			required: [true, "Please provide a first name"],
-		},
-		lastName: { type: String, required: [true, "Please provide a last name"] },
-		avatar: { type: String },
+		// avatar: { type: String },
 	},
 	{
 		timestamps: true,

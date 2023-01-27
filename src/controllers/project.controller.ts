@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import Logger from "../library/Logger";
 import Project from "../models/project.model";
-import User from "../models/user.model";
-import mongoose from "mongoose";
 
 async function createProject(req: Request, res: Response) {
 	const { title, team, type, description, dueDate, users, createdBy } =
@@ -66,7 +64,7 @@ async function getProjects(req: Request, res: Response) {
 			return res.status(404).json({ message: "Projects could not be found." });
 		}
 
-		return res.status(200).json({ projects });
+		return res.status(200).json(projects);
 	} catch (error: any) {
 		Logger.error(error.message);
 		return res.status(404).json({ message: "Projects count not be found" });

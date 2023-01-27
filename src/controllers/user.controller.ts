@@ -5,9 +5,9 @@ import User from "../models/user.model";
 import mongoose from "mongoose";
 
 async function createUser(req: Request, res: Response, next: NextFunction) {
-	const { username, email, firstName, lastName, password, avatar } = req.body;
+	const { username, email, password } = req.body;
 
-	if (!username || !email || !firstName || !lastName || !password || !avatar) {
+	if (!username || !email || !password) {
 		throw Error("Please provide all values.");
 	}
 
@@ -21,9 +21,7 @@ async function createUser(req: Request, res: Response, next: NextFunction) {
 		username,
 		password,
 		email,
-		firstName,
-		lastName,
-		avatar,
+		// avatar,
 	});
 
 	// const token = user.createJWT();

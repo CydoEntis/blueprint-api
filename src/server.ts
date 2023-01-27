@@ -49,9 +49,9 @@ function startServer() {
 
 	// TODO: Add Routes...
 	app.use("/user", userRoutes);
-	app.use("/project", projectRoutes);
-	app.use("/task", taskRoutes);
-	app.use("/comment", commentRoutes);
+	// app.use("/project", projectRoutes);
+	// app.use("/task", taskRoutes);
+	// app.use("/comment", commentRoutes);
 
 	app.use((req: Request, res: Response, next: NextFunction) => {
 		const error = new Error("Not Found");
