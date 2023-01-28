@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { config } from "../config/config";
 import jwt from "jsonwebtoken";
 
@@ -39,23 +39,15 @@ UserSchema.pre("save", async function (next) {
 	}
 
 	const salt = await bcrypt.genSalt(config.saltRounds);
-	const hash = await bcrypt.hashSync(this.password, salt);
-	this.password = hash;
+	this.password = await bcrypt.hash(this.password, salt);
 	return next();
 });
 
 UserSchema.methods.comparePassword = async function (
 	checkPassword: string,
 ): Promise<boolean> {
-	try {
-		const isValid = bcrypt.compare(checkPassword, this.password);
-		if (!isValid) {
-			return false;
-		}
-		return true;
-	} catch (error: any) {
-		return false;
-	}
+	const isAMatch = await bcrypt.compare(checkPassword, this.password);
+	return isAMatch;
 };
 
 UserSchema.methods.createJWT = function () {

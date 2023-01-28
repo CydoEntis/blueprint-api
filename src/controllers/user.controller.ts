@@ -35,20 +35,20 @@ async function loginUser(req: Request, res: Response) {
 	const { email, password } = req.body;
 
 	if (!email || !password) {
-		throw Error("Please provide all values");
+		return res.status(401).json("Please provide all values");
 	}
 
 	try {
 		const user = await User.findOne({ email }).select("+password");
 
 		if (!user) {
-			throw Error("Invalid email or password.");
+			return res.status(401).json({ message: "Invalid email or password" });
 		}
 
 		const isPasswordCorrect = await user.comparePassword(password);
 
 		if (!isPasswordCorrect) {
-			throw Error("Invalid email or password");
+			return res.status(401).json({ message: "Invalid email or password" });
 		}
 
 		const token = user.createJWT();
@@ -57,6 +57,7 @@ async function loginUser(req: Request, res: Response) {
 		return res.status(200).json({ user, token });
 	} catch (error: any) {
 		Logger.error(error);
+		console.log(error);
 		return res.status(404).json({ message: error });
 	}
 }
