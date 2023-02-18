@@ -1,13 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
 
 import Logger from "./library/Logger";
-import commentRoutes from "./routes/comment.routes";
 import { config } from "./config/config";
 import cors from "cors";
 import http from "http";
 import mongoose from "mongoose";
-import projectRoutes from "./routes/project.routes";
-import taskRoutes from "./routes/task.routes";
+import jobRoutes from "./routes/job.routes";
 import userRoutes from "./routes/user.routes";
 
 const app = express();
@@ -49,9 +47,7 @@ function startServer() {
 
 	// TODO: Add Routes...
 	app.use("/user", userRoutes);
-	app.use("/project", projectRoutes);
-	app.use("/task", taskRoutes);
-	app.use("/comment", commentRoutes);
+	app.use("/jobs", jobRoutes);
 
 	app.use((req: Request, res: Response, next: NextFunction) => {
 		const error = new Error("Not Found");
