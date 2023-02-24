@@ -35,22 +35,22 @@ async function addJob(req: Request, res: Response) {
 	}
 }
 
-// async function getJob(req: Request, res: Response) {
-// 	const taskId = req.params.taskId;
+async function getJob(req: Request, res: Response) {
+	const jobId = req.params.jobId;
 
-// 	try {
-// 		const task = await Task.findById(taskId).populate("users").select("-__v");
+	try {
+		const job = await Job.findById(jobId);
 
-// 		if (!task) {
-// 			return res.status(404).json({ message: "Task could not be found." });
-// 		}
+		if (!job) {
+			return res.status(404).json({ message: "Job could not be found." });
+		}
 
-// 		return res.status(200).json({ task });
-// 	} catch (error: any) {
-// 		Logger.error(error.message);
-// 		return res.status(404).json({ message: "Task count not be found" });
-// 	}
-// }
+		return res.status(200).json({ job });
+	} catch (error: any) {
+		Logger.error(error.message);
+		return res.status(404).json({ message: "Job could not be found" });
+	}
+}
 
 async function getJobs(req: Request, res: Response) {
 	try {
@@ -123,5 +123,6 @@ async function getJobs(req: Request, res: Response) {
 
 export default {
 	addJob,
-	getJobs
+	getJobs,
+	getJob
 };

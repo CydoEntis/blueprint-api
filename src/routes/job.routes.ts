@@ -3,7 +3,7 @@ import express from "express";
 
 const router = express.Router();
 
-// router.get("/get/:taskId", controller.getTask);
+router.get("/get/:jobId", controller.getJob);
 router.get("/get", controller.getJobs);
 router.post("/add", controller.addJob);
 // router.put("/update/:taskId", controller.updateTask);
