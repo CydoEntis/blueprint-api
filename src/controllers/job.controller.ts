@@ -66,27 +66,30 @@ async function getJobs(req: Request, res: Response) {
 	}
 }
 
-// async function updateTask(req: Request, res: Response) {
-// 	const taskId = req.params.taskId;
-// 	req.body;
+async function updateJob(req: Request, res: Response) {
+	const jobId = req.params.jobId;
+	const { position, company, location, jobType, jobStatus, } = req.body;
+	try {
+		const jobExists = await Job.findById(jobId);
 
-// 	try {
-// 		const task = await Task.findById(taskId);
+		if (!jobExists) {
+			return res.status(404).json({ message: "Job could not be found" });
+		}
 
-// 		if (!task) {
-// 			return res.status(404).json({ message: "Task could not be found" });
-// 		}
+		const updatedJob = await Job.findOneAndUpdate({ jobId }, {
+			position,
+			company,
+			location,
+			jobType,
+			jobStatus
+		});
 
-// 		// Create an updated task object and check to see if all were passed through.
-
-// 		const updatedTask = await Task.findOneAndUpdate({ taskId }, {});
-
-// 		return res.status(200).json({ updatedTask });
-// 	} catch (error: any) {
-// 		Logger.error(error);
-// 		return res.status(404).json({ message: "Task could not be updated" });
-// 	}
-// }
+		return res.status(200).json({ updatedJob });
+	} catch (error: any) {
+		Logger.error(error);
+		return res.status(404).json({ message: "Job could not be updated" });
+	}
+}
 
 // async function deleteTask(req: Request, res: Response) {
 // 	const taskId = req.params.taskId;
@@ -124,5 +127,6 @@ async function getJobs(req: Request, res: Response) {
 export default {
 	addJob,
 	getJobs,
-	getJob
+	getJob,
+	updateJob
 };
