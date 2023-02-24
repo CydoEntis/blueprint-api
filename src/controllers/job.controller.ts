@@ -91,22 +91,22 @@ async function updateJob(req: Request, res: Response) {
 	}
 }
 
-// async function deleteTask(req: Request, res: Response) {
-// 	const taskId = req.params.taskId;
+async function deleteJob(req: Request, res: Response) {
+	const jobId = req.params.jobId;
 
-// 	try {
-// 		await Task.findByIdAndDelete(taskId);
+	try {
+		await Job.findByIdAndDelete(jobId);
 
-// 		return res
-// 			.status(201)
-// 			.json({ message: `Task with id: ${taskId} was deleted.` });
-// 	} catch (error: any) {
-// 		Logger.error(error);
-// 		return res
-// 			.status(404)
-// 			.json({ message: `Task with id: ${taskId} could not be deleted.` });
-// 	}
-// }
+		return res
+			.status(201)
+			.json({ message: `Job with id: ${jobId} was deleted.` });
+	} catch (error: any) {
+		Logger.error(error);
+		return res
+			.status(404)
+			.json({ message: `Job with id: ${jobId} could not be deleted.` });
+	}
+}
 
 // async function deleteAllTasks(req: Request, res: Response) {
 // 	const { projectId } = req.body;
@@ -128,5 +128,6 @@ export default {
 	addJob,
 	getJobs,
 	getJob,
-	updateJob
+	updateJob,
+	deleteJob
 };
