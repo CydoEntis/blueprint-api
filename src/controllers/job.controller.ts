@@ -93,6 +93,7 @@ async function updateJob(req: Request, res: Response) {
 
 async function deleteJob(req: Request, res: Response) {
 	const jobId = req.params.jobId;
+	console.log(req.params);
 
 	try {
 		await Job.findByIdAndDelete(jobId);
