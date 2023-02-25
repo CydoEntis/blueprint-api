@@ -4,16 +4,18 @@ import Logger from "../library/Logger";
 import Job from "../models/job.model";
 
 async function addJob(req: Request, res: Response) {
-	console.log(req.body)
 	const {
 		position,
 		company,
 		location,
 		jobType,
-		description
+		description,
+		createdAt
 	} = req.body;
 
-	if (!position || !company || !location || !jobType || !description ) {
+	console.log(req.body);
+
+	if (!position || !company || !location || !jobType || !description || !createdAt ) {
 		Logger.error("Please provide all values.");
 		return res.status(404).json("Please provide all values.");
 	}
@@ -24,7 +26,8 @@ async function addJob(req: Request, res: Response) {
 			company,
 			location,
 			jobType,
-			description
+			description,
+			createdAt
 		});
 
 		return res.status(201).json({ job });
@@ -59,29 +62,46 @@ async function getJobs(req: Request, res: Response) {
 			return res.status(404).json({ message: "No jobs could be found." });
 		}
 
-		res.status(200).json({ jobs });
+		let pending = 0;
+		let declined = 0;
+		let interview = 0;
+
+		for(let job of jobs) {
+			const jobStatus = job.jobStatus;
+			if(jobStatus === "pending") {
+				pending++;
+			} else if (jobStatus === "declined") {
+				declined++;
+			} else if (jobStatus === "interview") {
+				interview++;
+			}
+		}
+
+		res.status(200).json({ jobs, pending, declined, interview });
 	} catch (error: any) {
 		return res.status(404).json({ message: "No jobs could be found." });
 	}
 }
 
 async function updateJob(req: Request, res: Response) {
-	const jobId = req.params.jobId;
-	const { position, company, location, jobType, jobStatus, } = req.body;
+	const { _id, position, company, location, jobType, jobStatus, interviewDate } = req.body;
+	console.log(_id);
 	try {
-		const jobExists = await Job.findById(jobId);
-
+		const jobExists = await Job.findById(_id);
+		
 		if (!jobExists) {
 			return res.status(404).json({ message: "Job could not be found" });
 		}
-
-		const updatedJob = await Job.findOneAndUpdate({ jobId }, {
+		
+		const updatedJob = await Job.findOneAndUpdate({ _id }, {
 			position,
 			company,
 			location,
 			jobType,
-			jobStatus
+			jobStatus,
+			interviewDate,
 		});
+		console.log(updatedJob);
 
 		return res.status(200).json({ updatedJob });
 	} catch (error: any) {
@@ -92,7 +112,6 @@ async function updateJob(req: Request, res: Response) {
 
 async function deleteJob(req: Request, res: Response) {
 	const jobId = req.params.jobId;
-	console.log(req.params);
 
 	try {
 		await Job.findByIdAndDelete(jobId);
