@@ -92,6 +92,12 @@ async function updateJob(req: Request, res: Response) {
 		if (!jobExists) {
 			return res.status(404).json({ message: "Job could not be found" });
 		}
+
+		let updatedInterviewDate = interviewDate;
+		if(jobStatus !== 'interview') {
+			updatedInterviewDate = null;
+		}
+		
 		
 		const updatedJob = await Job.findOneAndUpdate({ _id }, {
 			position,
@@ -99,7 +105,7 @@ async function updateJob(req: Request, res: Response) {
 			location,
 			jobType,
 			jobStatus,
-			interviewDate,
+			interviewDate: updatedInterviewDate,
 		});
 		console.log(updatedJob);
 
