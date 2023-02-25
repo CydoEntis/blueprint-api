@@ -1,11 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 import Logger from "../library/Logger";
 import Job from "../models/job.model";
-import User from "../models/user.model";
-import mongoose from "mongoose";
 
 async function addJob(req: Request, res: Response) {
+	console.log(req.body)
 	const {
 		position,
 		company,
@@ -20,7 +19,7 @@ async function addJob(req: Request, res: Response) {
 	}
 
 	try {
-		const task = await Job.create({
+		const job = await Job.create({
 			position,
 			company,
 			location,
@@ -28,7 +27,7 @@ async function addJob(req: Request, res: Response) {
 			description
 		});
 
-		return res.status(201).json({ task });
+		return res.status(201).json({ job });
 	} catch (error: any) {
 		Logger.error(error);
 		return res.status(500).json({ message: error });
@@ -54,15 +53,15 @@ async function getJob(req: Request, res: Response) {
 
 async function getJobs(req: Request, res: Response) {
 	try {
-		const jobs = await Job.find({});
+		const jobs = await Job.find({}).sort({createdAt: -1});
 
 		if (!jobs) {
-			return res.status(404).json({ message: "No tasks could be found." });
+			return res.status(404).json({ message: "No jobs could be found." });
 		}
 
 		res.status(200).json({ jobs });
 	} catch (error: any) {
-		return res.status(404).json({ message: "No tasks could be found." });
+		return res.status(404).json({ message: "No jobs could be found." });
 	}
 }
 
@@ -109,19 +108,19 @@ async function deleteJob(req: Request, res: Response) {
 	}
 }
 
-// async function deleteAllTasks(req: Request, res: Response) {
+// async function deleteAllJobs(req: Request, res: Response) {
 // 	const { projectId } = req.body;
 
 // 	try {
-// 		await Task.deleteMany({ projectId });
+// 		await Job.deleteMany({ projectId });
 
 // 		return res
 // 			.status(201)
-// 			.json({ message: `Tasks with projectId: ${projectId} were deleted.` });
+// 			.json({ message: `Jobs with projectId: ${projectId} were deleted.` });
 // 	} catch (error: any) {
 // 		return res
 // 			.status(404)
-// 			.json({ message: `No tasks with projectId: ${projectId} were deleted.` });
+// 			.json({ message: `No jobs with projectId: ${projectId} were deleted.` });
 // 	}
 // }
 
