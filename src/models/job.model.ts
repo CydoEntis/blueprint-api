@@ -13,12 +13,12 @@ export interface IJobModel extends IJob, Document {}
 
 const JobSchema: Schema = new Schema(
   {
-    position: { type: String, required: [true, "Please enter a position"] },
-    company: { type: String, required: [true, "Please enter a company"] },
-    location: { type: String, required: [true, "Please enter a location"] },
-    jobType: { type: String, required: [true, "Please select a valid type"] },
+    position: { type: String, required: [true, "Please enter a position"], trim: true },
+    company: { type: String, required: [true, "Please enter a company"], trim: true },
+    location: { type: String, required: [true, "Please enter a location"], trim: true },
+    jobType: { type: String, required: [true, "Please select a valid type"], trim: true },
     jobStatus: { type: String, default: "pending" },
-    description: { type: String, required: [true, "Please add a description"] },
+    description: { type: String, required: [true, "Please add a description"], trim: true },
     interviewDate: { type: Date, default: null },
   },
   {
