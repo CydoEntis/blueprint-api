@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { SortOrder } from "mongoose";
+import moment from "moment";
+import mongoose, { SortOrder } from "mongoose";
 
 import Logger from "../library/Logger";
 import Job from "../models/job.model";
@@ -89,7 +90,7 @@ async function getJobs(req: Request, res: Response) {
   try {
     let result = Job.find(queryObject);
 
-	const allJobs = await Job.find({});
+    const allJobs = await Job.find({});
 
     let pending = 0;
     let declined = 0;
@@ -163,20 +164,21 @@ async function getJobs(req: Request, res: Response) {
     //         sortVal as [string, SortOrder][]
     //       );
     //     }
-	result = result.skip(skip).limit(limit);
-	
-	const jobs = await result;
+    result = result.skip(skip).limit(limit);
 
-	const totalJobs = await Job.countDocuments(queryObject);
-	const numOfPages = Math.ceil(totalJobs / limit);
+    const jobs = await result;
+
+    const totalJobs = await Job.countDocuments(queryObject);
+    const numOfPages = Math.ceil(totalJobs / limit);
 
     console.log(jobs);
     if (!jobs) {
       return res.status(404).json({ message: "No jobs could be found." });
     }
 
-
-    res.status(200).json({ jobs, pending, declined, interview, totalJobs, numOfPages });
+    res
+      .status(200)
+      .json({ jobs, pending, declined, interview, totalJobs, numOfPages });
   } catch (error: any) {
     return res.status(404).json({ message: "No jobs could be found." });
   }
@@ -242,21 +244,38 @@ async function deleteJob(req: Request, res: Response) {
   }
 }
 
-// async function deleteAllJobs(req: Request, res: Response) {
-// 	const { projectId } = req.body;
+async function getMonthlyApps(req: Request, res: Response) {
+  let monthlyApplications = await Job.aggregate([
+    {
+      $group: {
+        _id: {
+          year: { $year: { $dateFromString: { dateString: "$createdAt" } } },
+          month: { $month: { $dateFromString: { dateString: "$createdAt" } } },
+        },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { "_id.year": -1, "_id.month": -1 } },
+    { $limit: 6 },
+  ]);
 
-// 	try {
-// 		await Job.deleteMany({ projectId });
+  monthlyApplications = monthlyApplications
+    .map((item) => {
+      const {
+        _id: { year, month },
+        count,
+      } = item;
+      const date = moment()
+        .month(month - 1)
+        .year(year)
+        .format("MMM Y");
+      return { date, count };
+    })
+    .reverse();
 
-// 		return res
-// 			.status(201)
-// 			.json({ message: `Jobs with projectId: ${projectId} were deleted.` });
-// 	} catch (error: any) {
-// 		return res
-// 			.status(404)
-// 			.json({ message: `No jobs with projectId: ${projectId} were deleted.` });
-// 	}
-// }
+  console.log(monthlyApplications);
+  return res.status(200).json({ monthlyApplications });
+}
 
 export default {
   addJob,
@@ -264,4 +283,5 @@ export default {
   getJob,
   updateJob,
   deleteJob,
+  getMonthlyApps,
 };
