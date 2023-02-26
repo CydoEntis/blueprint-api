@@ -70,6 +70,8 @@ async function getJobs(req: Request, res: Response) {
   const currPage = Number(page) || 1;
   const skip = (currPage - 1) * limit;
 
+  console.log(req.query);
+
   const queryObject: ISearch = {};
 
   if (jobStatus && jobStatus !== "all") {
@@ -105,11 +107,11 @@ async function getJobs(req: Request, res: Response) {
     }
 
     if (sort === "oldest") {
-      result.sort("-createdAt");
+      result.sort("createdAt");
     }
 
     if (sort === "newest") {
-      result.sort("createdAt");
+      result.sort("-createdAt");
     }
 
     if (sort === "a-z") {
