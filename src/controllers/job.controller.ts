@@ -66,7 +66,7 @@ interface ISearch {
 
 async function getJobs(req: Request, res: Response) {
   const { search, jobStatus, jobType, sort, page } = req.query;
-  const limit = 6;
+  const limit = 8;
   const currPage = Number(page) || 1;
   const skip = (currPage - 1) * limit;
 
