@@ -56,63 +56,45 @@ async function getJob(req: Request, res: Response) {
   }
 }
 
-async function getJobs(req: Request, res: Response) {
-  const { search, jobStatus, jobType, sort } = req.query;
+interface ISearch {
+  search?: string;
+  jobStatus?: string;
+  jobType?: string;
+  sort?: string;
+  position?: { $regex: string; $options: string };
+}
 
-  let sortVal: unknown;
-  if (sort === "oldest") {
-    sortVal = { createdAt: 1 as SortOrder };
-  } else if (sort === "newest") {
-    sortVal = { createdAt: -1 as SortOrder };
-  } else if (sort === "z-a") {
-    sortVal = { position: -1 as SortOrder };
-  } else if (sort === "a-z") {
-    sortVal = { position: 1 as SortOrder };
+async function getJobs(req: Request, res: Response) {
+  const { search, jobStatus, jobType, sort, page } = req.query;
+  const limit = 6;
+  const currPage = Number(page) || 1;
+  const skip = (currPage - 1) * limit;
+
+  const queryObject: ISearch = {};
+
+  if (jobStatus && jobStatus !== "all") {
+    queryObject.jobStatus = jobStatus as string;
+  }
+
+  if (jobStatus && jobType !== "all") {
+    queryObject.jobType = jobType as string;
+  }
+
+  if (search) {
+    queryObject.position = { $regex: search as string, $options: "i" };
   }
 
   try {
-    let jobs;
-    if (search === "" && jobStatus === "all" && jobType === "all") {
-      jobs = await Job.find({}).sort(sortVal as [string, SortOrder][]);
-    } else if (search === "" && jobStatus !== "all" && jobType !== "all") {
-      jobs = await Job.find({ jobStatus: jobStatus, jobType: jobType }).sort(
-        sortVal as [string, SortOrder][]
-      );
-    } else if (search === "" && jobStatus !== "all" && jobType === "all") {
-      jobs = await Job.find({ jobStatus: jobStatus }).sort(
-        sortVal as [string, SortOrder][]
-      );
-    } else if (search === "" && jobStatus === "all" && jobType !== "all") {
-      jobs = await Job.find({ jobType: jobType }).sort(
-        sortVal as [string, SortOrder][]
-      );
-    } else if (search !== "" && jobStatus === "all" && jobType === "all") {
-      jobs = await Job.find({$text: {$search: search as string}}).sort(sortVal as [string, SortOrder][]);
-    } else if (search !== "" && jobStatus !== "all" && jobType !== "all") {
-      jobs = await Job.find({$text: {$search: search as string}, jobStatus: jobStatus, jobType: jobType }).sort(
-        sortVal as [string, SortOrder][]
-      );
-    } else if (search !== "" && jobStatus !== "all" && jobType === "all") {
-      jobs = await Job.find({$text: {$search: search as string}, jobStatus: jobStatus }).sort(
-        sortVal as [string, SortOrder][]
-      );
-    } else if (search !== "" && jobStatus === "all" && jobType !== "all") {
-      jobs = await Job.find({$text: {$search: search as string}, jobType: jobType }).sort(
-        sortVal as [string, SortOrder][]
-      );
-    }
+    let result = Job.find(queryObject);
 
-    console.log(jobs);
-    if (!jobs) {
-      return res.status(404).json({ message: "No jobs could be found." });
-    }
+	const allJobs = await Job.find({});
 
     let pending = 0;
     let declined = 0;
     let interview = 0;
 
-    for (let job of jobs) {
-      const jobStatus = job.jobStatus;
+    for (let j of allJobs) {
+      const jobStatus = j.jobStatus;
       if (jobStatus === "pending") {
         pending++;
       } else if (jobStatus === "declined") {
@@ -122,7 +104,77 @@ async function getJobs(req: Request, res: Response) {
       }
     }
 
-    res.status(200).json({ jobs, pending, declined, interview });
+    if (sort === "oldest") {
+      result.sort("-createdAt");
+    }
+
+    if (sort === "newest") {
+      result.sort("createdAt");
+    }
+
+    if (sort === "a-z") {
+      result.sort("position");
+    }
+
+    if (sort === "z-a") {
+      result.sort("-position");
+    }
+
+    //   let sortVal: unknown;
+    //   if (sort === "oldest") {
+    //     sortVal = { createdAt: 1 as SortOrder };
+    //   } else if (sort === "newest") {
+    //     sortVal = { createdAt: -1 as SortOrder };
+    //   } else if (sort === "z-a") {
+    //     sortVal = { position: -1 as SortOrder };
+    //   } else if (sort === "a-z") {
+    //     sortVal = { position: 1 as SortOrder };
+    //   }
+
+    //     let jobs;
+    //     if (search === "" && jobStatus === "all" && jobType === "all") {
+    //       jobs = await Job.find({}).sort(sortVal as [string, SortOrder][]);
+    //     } else if (search === "" && jobStatus !== "all" && jobType !== "all") {
+    //       jobs = await Job.find({ jobStatus: jobStatus, jobType: jobType }).sort(
+    //         sortVal as [string, SortOrder][]
+    //       );
+    //     } else if (search === "" && jobStatus !== "all" && jobType === "all") {
+    //       jobs = await Job.find({ jobStatus: jobStatus }).sort(
+    //         sortVal as [string, SortOrder][]
+    //       );
+    //     } else if (search === "" && jobStatus === "all" && jobType !== "all") {
+    //       jobs = await Job.find({ jobType: jobType }).sort(
+    //         sortVal as [string, SortOrder][]
+    //       );
+    //     } else if (search !== "" && jobStatus === "all" && jobType === "all") {
+    //       jobs = await Job.find({$text: {$search: search as string}}).sort(sortVal as [string, SortOrder][]);
+    //     } else if (search !== "" && jobStatus !== "all" && jobType !== "all") {
+    //       jobs = await Job.find({$text: {$search: search as string}, jobStatus: jobStatus, jobType: jobType }).sort(
+    //         sortVal as [string, SortOrder][]
+    //       );
+    //     } else if (search !== "" && jobStatus !== "all" && jobType === "all") {
+    //       jobs = await Job.find({$text: {$search: search as string}, jobStatus: jobStatus }).sort(
+    //         sortVal as [string, SortOrder][]
+    //       );
+    //     } else if (search !== "" && jobStatus === "all" && jobType !== "all") {
+    //       jobs = await Job.find({$text: {$search: search as string}, jobType: jobType }).sort(
+    //         sortVal as [string, SortOrder][]
+    //       );
+    //     }
+	result = result.skip(skip).limit(limit);
+	
+	const jobs = await result;
+
+	const totalJobs = await Job.countDocuments(queryObject);
+	const numOfPages = Math.ceil(totalJobs / limit);
+
+    console.log(jobs);
+    if (!jobs) {
+      return res.status(404).json({ message: "No jobs could be found." });
+    }
+
+
+    res.status(200).json({ jobs, pending, declined, interview, totalJobs, numOfPages });
   } catch (error: any) {
     return res.status(404).json({ message: "No jobs could be found." });
   }
