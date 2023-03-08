@@ -42,9 +42,10 @@ async function addJob(req: Request, res: Response) {
 
 async function getJob(req: Request, res: Response) {
   const jobId = req.params.jobId;
-
+  console.log(jobId);
   try {
     const job = await Job.findById(jobId);
+    console.log(job);
 
     if (!job) {
       return res.status(404).json({ message: "Job could not be found." });
@@ -123,47 +124,6 @@ async function getJobs(req: Request, res: Response) {
       result.sort("-position");
     }
 
-    //   let sortVal: unknown;
-    //   if (sort === "oldest") {
-    //     sortVal = { createdAt: 1 as SortOrder };
-    //   } else if (sort === "newest") {
-    //     sortVal = { createdAt: -1 as SortOrder };
-    //   } else if (sort === "z-a") {
-    //     sortVal = { position: -1 as SortOrder };
-    //   } else if (sort === "a-z") {
-    //     sortVal = { position: 1 as SortOrder };
-    //   }
-
-    //     let jobs;
-    //     if (search === "" && jobStatus === "all" && jobType === "all") {
-    //       jobs = await Job.find({}).sort(sortVal as [string, SortOrder][]);
-    //     } else if (search === "" && jobStatus !== "all" && jobType !== "all") {
-    //       jobs = await Job.find({ jobStatus: jobStatus, jobType: jobType }).sort(
-    //         sortVal as [string, SortOrder][]
-    //       );
-    //     } else if (search === "" && jobStatus !== "all" && jobType === "all") {
-    //       jobs = await Job.find({ jobStatus: jobStatus }).sort(
-    //         sortVal as [string, SortOrder][]
-    //       );
-    //     } else if (search === "" && jobStatus === "all" && jobType !== "all") {
-    //       jobs = await Job.find({ jobType: jobType }).sort(
-    //         sortVal as [string, SortOrder][]
-    //       );
-    //     } else if (search !== "" && jobStatus === "all" && jobType === "all") {
-    //       jobs = await Job.find({$text: {$search: search as string}}).sort(sortVal as [string, SortOrder][]);
-    //     } else if (search !== "" && jobStatus !== "all" && jobType !== "all") {
-    //       jobs = await Job.find({$text: {$search: search as string}, jobStatus: jobStatus, jobType: jobType }).sort(
-    //         sortVal as [string, SortOrder][]
-    //       );
-    //     } else if (search !== "" && jobStatus !== "all" && jobType === "all") {
-    //       jobs = await Job.find({$text: {$search: search as string}, jobStatus: jobStatus }).sort(
-    //         sortVal as [string, SortOrder][]
-    //       );
-    //     } else if (search !== "" && jobStatus === "all" && jobType !== "all") {
-    //       jobs = await Job.find({$text: {$search: search as string}, jobType: jobType }).sort(
-    //         sortVal as [string, SortOrder][]
-    //       );
-    //     }
     result = result.skip(skip).limit(limit);
 
     const jobs = await result;
@@ -245,6 +205,7 @@ async function deleteJob(req: Request, res: Response) {
 }
 
 async function getMonthlyApps(req: Request, res: Response) {
+  console.log("Test");
   let monthlyApplications = await Job.aggregate([
     {
       $group: {
@@ -258,6 +219,8 @@ async function getMonthlyApps(req: Request, res: Response) {
     { $sort: { "_id.year": -1, "_id.month": -1 } },
     { $limit: 6 },
   ]);
+
+  console.log(monthlyApplications);
 
   monthlyApplications = monthlyApplications
     .map((item) => {
